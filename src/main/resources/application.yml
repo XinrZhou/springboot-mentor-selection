@@ -1,0 +1,10 @@
+spring:
+  r2dbc:
+    url: r2dbcs:mysql://122.9.33.79:3308/mentorselection?serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  sql:
+    init:
+      mode: always
+server:
+  port: 8855
