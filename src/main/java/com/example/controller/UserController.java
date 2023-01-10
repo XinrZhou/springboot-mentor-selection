@@ -9,6 +9,7 @@ import com.example.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -26,21 +28,21 @@ public class UserController {
     @Autowired
     private StartTime startTime;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @PostMapping("/login")
     Mono<Result> login(@RequestBody User user, ServerHttpResponse response) {
-        return userService.findByNumber(user.getNumber())
+        return userService.getUser(user.getNumber())
                 .doOnSuccess(u -> {
-                    if (u == null || !u.getPassword().equals(user.getPassword())) {
+                    System.out.println(passwordEncoder.matches( user.getPassword(), u.getPassword()));
+                    if (u == null || !passwordEncoder.matches( user.getPassword(), u.getPassword())) {
                         throw new XException("账号密码错误");
                     }
                 }).map(u -> {
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("uid", u.getId().toString());
-                    map.put("role", u.getRole().toString());
-                    String token = JwtUtil.generateToken(map);
-                    response.getHeaders().add("token", token);
-
+                    String jwt = JwtUtil.createJWT(Map.of("uid", u.getId(), "role", u.getRole()));
+                    response.getHeaders().add("token", jwt);
 
                     String role = "";
                     switch (u.getRole()) {
@@ -61,7 +63,7 @@ public class UserController {
 
     @GetMapping("/info")
     Mono<Result> getInfo(@RequestAttribute("uid") long uid, @RequestAttribute("role") int role) {
-        Mono<User> userMono = userService.findById(uid);
+        Mono<User> userMono = userService.getUser(uid);
 
         return userMono.flatMap(user -> {
             return Mono.just(Result.success(Map.of("user", user)));

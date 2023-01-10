@@ -1,8 +1,8 @@
 package com.example.filter;
 
-import com.example.entity.User;
 import com.example.exception.XException;
 import com.example.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -37,9 +37,16 @@ public class LoginCheckFilter implements WebFilter {
 
         String token = request.getHeaders().getFirst("token");
         if(token != null) {
-            User user = JwtUtil.verifyToken(token);
-            exchange.getAttributes().put("uid",user.getId());
-            exchange.getAttributes().put("role",user.getRole());
+            try {
+                Claims claims = JwtUtil.parseJWT(token);
+                long uid = Long.parseLong(claims.getId());
+                int role = Integer.parseInt(claims.get("role", String.class));
+                System.out.println(uid+role);
+                exchange.getAttributes().put("uid", uid);
+                exchange.getAttributes().put("role", role);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             return chain.filter(exchange);
         }
 

@@ -1,7 +1,9 @@
 package com.example.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +19,8 @@ public class User {
     public static final int STUDENT = 0;
 
     @Id
+    @Column("id")
+    @CreatedBy
     private Long id;
 
     private String name;
