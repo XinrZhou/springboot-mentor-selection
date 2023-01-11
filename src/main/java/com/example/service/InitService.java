@@ -28,21 +28,21 @@ public class InitService {
     @Transactional
     @EventListener(classes = ApplicationReadyEvent.class)
     public Mono<Void> onApplicationEvent() {
-        String number = "2046";
-        var pwd = "2046";
+        String name = "admin";
+        var number = "2046";
         return userRepository.count().flatMap(r -> {
             if (r == 0) {
                 User admin = User.builder()
-                        .name(number)
+                        .name(name)
                         .number(number)
-                        .password(encoder.encode(pwd))
+                        .password(encoder.encode(number))
                         .role(User.ADMIN)
                         .insertTime(LocalDateTime.now())
                         .selectTime(LocalDateTime.now().plusMonths(5))
                         .build();
                 return userRepository.save(admin).then();
             }
-            return userRepository.findByNumber(number).doOnSuccess(user -> {
+            return userRepository.find(number).doOnSuccess(user -> {
                 startTime.setStartTime(user.getSelectTime());
             }).then();
         });

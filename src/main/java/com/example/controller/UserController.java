@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -31,12 +31,16 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
+    /**
+     * 登录
+     * @param user
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
     Mono<Result> login(@RequestBody User user, ServerHttpResponse response) {
         return userService.getUser(user.getNumber())
                 .doOnSuccess(u -> {
-                    System.out.println(passwordEncoder.matches( user.getPassword(), u.getPassword()));
                     if (u == null || !passwordEncoder.matches( user.getPassword(), u.getPassword())) {
                         throw new XException("账号密码错误");
                     }
@@ -61,13 +65,43 @@ public class UserController {
                 });
     }
 
+    /**
+     * 获取用户信息
+     * @param uid
+     * @param role
+     * @return
+     */
     @GetMapping("/info")
     Mono<Result> getInfo(@RequestAttribute("uid") long uid, @RequestAttribute("role") int role) {
-        Mono<User> userMono = userService.getUser(uid);
+        return userService.getUser(uid)
+                .flatMap(user -> {
+                    return Mono.just(Result.success(Map.of("user", user,"starttime",startTime.getStartTime())));
+                });
+    }
 
-        return userMono.flatMap(user -> {
-            return Mono.just(Result.success(Map.of("user", user)));
-        });
+    /**
+     * 修改密码
+     * @param pwd
+     * @param uid
+     * @return
+     */
+    @PutMapping("/password/{pwd}")
+    Mono<Result> resetPwd(@PathVariable String pwd, @RequestAttribute("uid") long uid) {
+        return userService.resetPwd(pwd, uid)
+                .then(Mono.just(Result.success()));
+    }
+
+    /**
+     * 获取导师列表
+     * @param role
+     * @return
+     */
+    @GetMapping("/teachers")
+    public Mono<Result> getTeacherList(@RequestAttribute("role") int role) {
+        return role == User.STUDENT && startTime.getStartTime().isAfter(LocalDateTime.now())
+                ? Mono.just(Result.error("未开始，开始时间：" + startTime.getStartTime()))
+                : userService.listUsers(User.TEACHER)
+                .map(users -> Result.success(Map.of("teachers", users)));
     }
 
 }

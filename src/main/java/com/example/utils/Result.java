@@ -33,6 +33,10 @@ public class Result {
         return Result.builder().code(200).data(data).message(msg).build();
     }
 
+    public static Result error() {
+        return Result.builder().code(400).build();
+    }
+
     public static Result error(String msg) {
         return Result.builder().code(400).message(msg).build();
     }
