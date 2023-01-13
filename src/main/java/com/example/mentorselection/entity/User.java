@@ -1,7 +1,5 @@
-package com.example.entity;
+package com.example.mentorselection.entity;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -43,10 +41,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer role;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long teacherId;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String teacherName;
 
     private LocalDateTime insertTime;

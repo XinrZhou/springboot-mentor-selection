@@ -1,4 +1,4 @@
-package com.example.exception;
+package com.example.mentorselection.exception;
 
 import lombok.SneakyThrows;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;

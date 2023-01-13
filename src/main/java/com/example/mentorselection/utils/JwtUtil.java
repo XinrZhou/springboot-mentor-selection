@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.example.mentorselection.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,14 +23,13 @@ public class JwtUtil {
         return Jwts.builder()
                 .setId(map.get("uid").toString())
                 .setSubject(map.get("role").toString())
-                .signWith(SignatureAlgorithm.HS256, JwtUtil.JWT_KEY) //使用HS256对称加密算法签名
+                .signWith(SignatureAlgorithm.HS256, JwtUtil.JWT_KEY)
                 .setExpiration(expDate)
                 .compact();
     }
 
     /**
      * 解析JWT
-     *
      * @param jwt
      * @return
      * @throws Exception

@@ -1,20 +1,18 @@
-package com.example.controller;
+package com.example.mentorselection.controller;
 
-import com.example.entity.StartTime;
-import com.example.entity.User;
-import com.example.exception.XException;
-import com.example.service.UserService;
-import com.example.utils.JwtUtil;
-import com.example.utils.Result;
+import com.example.mentorselection.entity.StartTime;
+import com.example.mentorselection.entity.User;
+import com.example.mentorselection.exception.XException;
+import com.example.mentorselection.service.UserService;
+import com.example.mentorselection.utils.JwtUtil;
+import com.example.mentorselection.utils.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -38,11 +36,11 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    Mono<Result> login(@RequestBody User user, ServerHttpResponse response) {
+    Mono<ResultVO> login(@RequestBody User user, ServerHttpResponse response) {
         return userService.getUser(user.getNumber())
                 .doOnSuccess(u -> {
                     if (u == null || !passwordEncoder.matches( user.getPassword(), u.getPassword())) {
-                        throw new XException("账号密码错误");
+                        throw new XException(ResultVO.UNAUTHORIZED, "账号密码错误");
                     }
                 }).map(u -> {
                     String jwt = JwtUtil.createJWT(Map.of("uid", u.getId(), "role", u.getRole()));
@@ -61,7 +59,7 @@ public class UserController {
                             break;
                     }
                     response.getHeaders().add("role",role);
-                    return Result.success();
+                    return ResultVO.success();
                 });
     }
 
@@ -72,10 +70,10 @@ public class UserController {
      * @return
      */
     @GetMapping("/info")
-    Mono<Result> getInfo(@RequestAttribute("uid") long uid, @RequestAttribute("role") int role) {
+    Mono<ResultVO> getInfo(@RequestAttribute("uid") long uid, @RequestAttribute("role") int role) {
         return userService.getUser(uid)
                 .flatMap(user -> {
-                    return Mono.just(Result.success(Map.of("user", user,"starttime",startTime.getStartTime())));
+                    return Mono.just(ResultVO.success(Map.of("user", user,"starttime",startTime.getStartTime())));
                 });
     }
 
@@ -86,9 +84,9 @@ public class UserController {
      * @return
      */
     @PutMapping("/password/{pwd}")
-    Mono<Result> resetPwd(@PathVariable String pwd, @RequestAttribute("uid") long uid) {
-        return userService.resetPwd(pwd, uid)
-                .then(Mono.just(Result.success()));
+    Mono<ResultVO> resetPwd(@PathVariable String pwd, @RequestAttribute("uid") long uid) {
+        return userService.resetPassword(uid, pwd)
+                .then(Mono.just(ResultVO.success()));
     }
 
     /**
@@ -97,11 +95,23 @@ public class UserController {
      * @return
      */
     @GetMapping("/teachers")
-    public Mono<Result> getTeacherList(@RequestAttribute("role") int role) {
+    public Mono<ResultVO> getTeacherList(@RequestAttribute("role") int role) {
         return role == User.STUDENT && startTime.getStartTime().isAfter(LocalDateTime.now())
-                ? Mono.just(Result.error("未开始，开始时间：" + startTime.getStartTime()))
-                : userService.listUsers(User.TEACHER)
-                .map(users -> Result.success(Map.of("teachers", users)));
+                ? Mono.just(ResultVO.error(ResultVO.BAD_REQUEST ,"开始时间" + startTime.getStartTime()))
+                : userService.listUsers()
+                .map(users -> ResultVO.success(Map.of("teachers", users)));
+    }
+
+    /**
+     * 选导师
+     * @param uid
+     * @param tid
+     * @return
+     */
+    @PutMapping("/teachers/{tid}")
+    public Mono<ResultVO> selectTeacher(@RequestAttribute("uid") long uid, @PathVariable long tid) {
+        return userService.select(uid, tid)
+                .map(user -> ResultVO.success(Map.of("user", user)));
     }
 
 }

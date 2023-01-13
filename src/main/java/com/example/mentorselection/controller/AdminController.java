@@ -1,8 +1,8 @@
-package com.example.controller;
+package com.example.mentorselection.controller;
 
-import com.example.entity.User;
-import com.example.service.UserService;
-import com.example.utils.Result;
+import com.example.mentorselection.entity.User;
+import com.example.mentorselection.service.AdminService;
+import com.example.mentorselection.utils.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +18,11 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     @Autowired
-    private UserService userService;
+    private AdminService adminService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     /**
      * 重置开始时间
@@ -30,11 +31,12 @@ public class AdminController {
      * @return
      */
     @PutMapping("/starttime/{time}")
-    public Mono<Result> putStartTime(@PathVariable String time, @RequestAttribute("uid") long uid) {
+    public Mono<ResultVO> putStartTime(@PathVariable String time, @RequestAttribute("uid") long uid) {
         LocalDateTime startTime = LocalDateTime.parse(time);
-        return userService.resetTime(startTime, uid)
-                .then(Mono.just(Result.success(Map.of("time", startTime))));
+        return adminService.resetTime(startTime, uid)
+                .then(Mono.just(ResultVO.success(Map.of("time", startTime))));
     }
+
 
     /**
      * 重置密码
@@ -42,9 +44,9 @@ public class AdminController {
      * @return
      */
     @PutMapping("/password/{number}")
-    public Mono<Result> putPassword(@PathVariable String number) {
-        return  userService.resetPassword(number)
-                .then(Mono.just(Result.success("重置成功")));
+    public Mono<ResultVO> putPassword(@PathVariable String number) {
+        return  adminService.resetPassword(number)
+                .then(Mono.just(ResultVO.success("重置成功")));
     }
 
     /**
@@ -53,7 +55,7 @@ public class AdminController {
      * @return
      */
     @PostMapping("/teachers")
-    public Mono<Result> saveTeachers(@RequestBody List<User> users) {
+    public Mono<ResultVO> saveTeachers(@RequestBody List<User> users) {
         List<User> userList = users.stream().map(u -> {
             u.setPassword(passwordEncoder.encode(u.getNumber()));
             u.setRole(User.TEACHER);
@@ -61,8 +63,8 @@ public class AdminController {
             u.setInsertTime(LocalDateTime.now());
             return u;
         }).collect(Collectors.toList());
-        return userService.addUsers(userList)
-                .then(Mono.just(Result.success("添加成功")));
+        return adminService.addUsers(userList)
+                .then(Mono.just(ResultVO.success("添加成功")));
     }
 
     /**
@@ -71,14 +73,14 @@ public class AdminController {
      * @return
      */
     @PostMapping("/students")
-    public Mono<Result> saveStudents(@RequestBody List<User> users) {
+    public Mono<ResultVO> saveStudents(@RequestBody List<User> users) {
         List<User> userList = users.stream().map(u -> {
             u.setPassword(passwordEncoder.encode(u.getNumber()));
             u.setRole(User.STUDENT);
             u.setInsertTime(LocalDateTime.now());
             return u;
         }).collect(Collectors.toList());
-        return userService.addUsers(userList)
-                .then(Mono.just(Result.success("添加成功")));
+        return adminService.addUsers(userList)
+                .then(Mono.just(ResultVO.success("添加成功")));
     }
 }

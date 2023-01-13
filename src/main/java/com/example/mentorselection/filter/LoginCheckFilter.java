@@ -1,7 +1,8 @@
-package com.example.filter;
+package com.example.mentorselection.filter;
 
-import com.example.exception.XException;
-import com.example.utils.JwtUtil;
+import com.example.mentorselection.exception.XException;
+import com.example.mentorselection.utils.JwtUtil;
+import com.example.mentorselection.utils.ResultVO;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -49,6 +50,6 @@ public class LoginCheckFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        throw new XException("未登录");
+        throw new XException(ResultVO.UNAUTHORIZED, "未登录");
     }
 }

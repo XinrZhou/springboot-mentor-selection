@@ -59,19 +59,19 @@
 2. 字段为空时不返回：@JsonInclude(JsonInclude.Include.NON_NULL)
 #### 异常
 1. 自定义异常类 
-2. 使用 @ControllerAdvice + @ExceptionHandler 注解处理全局异常
+2. 全局异常处理：@ControllerAdvice + @ExceptionHandler
 ``` 
 @RestControllerAdvice
 public class GlobalExceptinHandler {
 
     @ExceptionHandler(Exception.class)
-    public Mono<Result> handleException(Exception e) {
-        return Mono.just(Result.error( e.getMessage()));
+    public Mono<ResultVO> handleException(Exception e) {
+        return Mono.just(ResultVO.error( e.getMessage()));
     }
 
     @ExceptionHandler(XException.class)
-    public Mono<Result> handleXException(XException e) {
-        return Mono.just(Result.error(e.getMessage()));
+    public Mono<ResultVO> handleXException(XException e) {
+        return Mono.just(ResultVO.error(e.getMessage()));
     }
 
 } 

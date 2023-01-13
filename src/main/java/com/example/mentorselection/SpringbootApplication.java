@@ -1,6 +1,6 @@
-package com.example;
+package com.example.mentorselection;
 
-import com.example.entity.StartTime;
+import com.example.mentorselection.entity.StartTime;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

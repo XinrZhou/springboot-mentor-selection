@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.mentorselection.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -10,7 +10,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import java.math.BigInteger;
 
 /**
- * ToStringSerializer 解决雪花算法ID传到前端后精度丢失问题
+ * ToStringSerializer
  */
 @Configuration
 public class JacksonConfig {

@@ -1,9 +1,8 @@
-package com.example.service;
+package com.example.mentorselection.service.impl;
 
-import com.example.config.SnowFlake;
-import com.example.entity.StartTime;
-import com.example.entity.User;
-import com.example.repository.UserRepository;
+import com.example.mentorselection.entity.StartTime;
+import com.example.mentorselection.entity.User;
+import com.example.mentorselection.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -14,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+
+/**
+ * 初始化
+ */
 
 @Service
 @Slf4j
@@ -42,7 +45,7 @@ public class InitService {
                         .build();
                 return userRepository.save(admin).then();
             }
-            return userRepository.find(number).doOnSuccess(user -> {
+            return userRepository.findByNumber(number).doOnSuccess(user -> {
                 startTime.setStartTime(user.getSelectTime());
             }).then();
         });
