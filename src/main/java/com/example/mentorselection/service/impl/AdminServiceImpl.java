@@ -49,4 +49,16 @@ public class AdminServiceImpl implements AdminService {
     public Mono<List<User>> addUsers(List<User> users) {
         return userRepository.saveAll(users).collectList();
     }
+
+    @Override
+    public Mono<Void> resetData() {
+        return userRepository.updateTeachersCount()
+                .flatMap(c -> userRepository.findAllByRole(User.STUDENT)
+                        .flatMap(s -> {
+                            s.setTeacherId(null);
+                            s.setTeacherName(null);
+                            s.setSelectTime(null);
+                            return userRepository.save(s).then();
+                        }).then()).then();
+                }
 }

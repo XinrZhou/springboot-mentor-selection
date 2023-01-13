@@ -21,9 +21,6 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private StartTime startTime;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -83,6 +80,5 @@ public class UserServiceImpl implements UserService {
                                 return userRepository.save(s);
                             }));
     }
-
 
 }

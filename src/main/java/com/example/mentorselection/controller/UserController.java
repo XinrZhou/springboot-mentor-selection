@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @RestController
@@ -97,7 +98,7 @@ public class UserController {
     @GetMapping("/teachers")
     public Mono<ResultVO> getTeacherList(@RequestAttribute("role") int role) {
         return role == User.STUDENT && startTime.getStartTime().isAfter(LocalDateTime.now())
-                ? Mono.just(ResultVO.error(ResultVO.BAD_REQUEST ,"开始时间" + startTime.getStartTime()))
+                ? Mono.just(ResultVO.error(ResultVO.BAD_REQUEST ,"开始时间" + DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(startTime.getStartTime())))
                 : userService.listUsers()
                 .map(users -> ResultVO.success(Map.of("teachers", users)));
     }

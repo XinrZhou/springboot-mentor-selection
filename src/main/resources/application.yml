@@ -2,7 +2,7 @@ server:
   port: 8855
 spring:
   r2dbc:
-    url: r2dbcs:mysql://122.9.33.79:3308/mentorselection?serverTimezone=Asia/Shanghai
+    url: r2dbcs:mysql://122.9.33.79:3308/mentorselection?serverTimezone=Asia/Shanghai&&SSL=false&sslMode=DISABLED
     username: root
     password: 123456
   sql:
@@ -13,6 +13,3 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5Dialect
     hibernate:
       ddl-auto: update
-snowflake:
-  datacenter-id: 1
-  worker-id: 0

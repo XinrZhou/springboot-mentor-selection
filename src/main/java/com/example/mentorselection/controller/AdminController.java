@@ -83,4 +83,14 @@ public class AdminController {
         return adminService.addUsers(userList)
                 .then(Mono.just(ResultVO.success("添加成功")));
     }
+
+    /**
+     * 重置数据
+     * @return
+     */
+    @PutMapping("/reset")
+    public Mono<ResultVO> resetTeacherAndStudentData() {
+        return adminService.resetData()
+                .then(Mono.just(ResultVO.success("重置成功")));
+    }
 }

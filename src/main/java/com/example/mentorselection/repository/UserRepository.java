@@ -31,4 +31,8 @@ public interface UserRepository extends ReactiveCrudRepository<User, Long> {
     @Query("update user u set u.password=:password where u.id=:uid;")
     Mono<Integer> updatePassword(long uid, String password);
 
+    @Modifying
+    @Query("update user u set u.count=0 where u.role=5;")
+    Mono<Integer> updateTeachersCount();
+
 }

@@ -1,7 +1,9 @@
 package com.example.mentorselection.service;
 
 import com.example.mentorselection.entity.User;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -15,4 +17,7 @@ public interface AdminService {
     public Mono<Void> resetPassword(String number);
 
     public Mono<List<User>> addUsers(List<User> users);
+
+    @Transactional
+    public Mono<Void> resetData();
 }

@@ -22,7 +22,7 @@ public class GlobalExceptinHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Mono<ResultVO> handelDataIntegrityViolationException(DataIntegrityViolationException exception) {
-        return Mono.just(ResultVO.error(409, exception.getMessage()));
+        return Mono.just(ResultVO.error(409, "唯一约束冲突" + exception.getMessage()));
     }
 }
 
