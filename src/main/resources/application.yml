@@ -2,14 +2,24 @@ server:
   port: 8855
 spring:
   r2dbc:
-    url: r2dbcs:mysql://122.9.33.79:3308/mentorselection?serverTimezone=Asia/Shanghai&&SSL=false&sslMode=DISABLED
+    url: r2dbcs:mysql://122.9.33.79:3307/?serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: 1157
   sql:
     init:
       mode: always
-  jpa:
-    show-sql: true
-    database-platform: org.hibernate.dialect.MySQL5Dialect
-    hibernate:
-      ddl-auto: update
+      schema-locations: classpath:schema.sql
+#  jpa:
+#    show-sql: true
+#    database-platform: org.hibernate.dialect.MySQL5Dialect
+#    hibernate:
+#      ddl-auto: update
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  r2dbc:
+    url: r2dbcs:mysql://${dhost}/?serverTimezone=Asia/Shanghai
+    username: ${dusername}
+    password: ${dpassword}

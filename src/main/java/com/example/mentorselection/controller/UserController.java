@@ -67,11 +67,10 @@ public class UserController {
     /**
      * 获取用户信息
      * @param uid
-     * @param role
      * @return
      */
     @GetMapping("/info")
-    Mono<ResultVO> getInfo(@RequestAttribute("uid") long uid, @RequestAttribute("role") int role) {
+    Mono<ResultVO> getInfo(@RequestAttribute("uid") long uid) {
         return userService.getUser(uid)
                 .flatMap(user -> {
                     return Mono.just(ResultVO.success(Map.of("user", user,"starttime",startTime.getStartTime())));
