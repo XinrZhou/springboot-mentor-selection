@@ -1,6 +1,5 @@
 package com.example.mentorselection.exception;
 
-import lombok.SneakyThrows;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -23,7 +22,7 @@ public class ExceptionHandler implements ErrorWebExceptionHandler {
 
         DataBuffer buff = response.bufferFactory().allocateBuffer().write(throwable.getMessage().getBytes());
 
-        response.getHeaders().setContentType(MediaType.APPLICATION_STREAM_JSON);
+        response.getHeaders().add("Content-Type", "application/json");
         return response.writeAndFlushWith(Mono.just(ByteBufMono.just(buff)));
 
     }

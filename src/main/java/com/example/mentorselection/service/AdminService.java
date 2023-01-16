@@ -16,6 +16,7 @@ public interface AdminService {
     @Transactional
     public Mono<Void> resetPassword(String number);
 
+    @Transactional
     public Mono<List<User>> addUsers(List<User> users);
 
     @Transactional

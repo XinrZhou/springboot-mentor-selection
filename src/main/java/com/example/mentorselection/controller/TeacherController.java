@@ -3,16 +3,14 @@ package com.example.mentorselection.controller;
 import com.example.mentorselection.service.TeacherService;
 import com.example.mentorselection.utils.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teacher")
+@CrossOrigin
 public class TeacherController {
 
     @Autowired

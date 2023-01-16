@@ -9,6 +9,7 @@ create table if not exists user
     total int null,
     count int null,
     role int not null,
+    description varchar(600) null,
     teacher_id bigint(19) null,
     teacher_name varchar (45) null,
     select_time datetime null,
