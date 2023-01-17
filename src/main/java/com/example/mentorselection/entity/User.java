@@ -34,10 +34,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer total;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer count;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

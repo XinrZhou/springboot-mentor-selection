@@ -4,7 +4,9 @@
 十月份开始学习 SpringBoot，学了一段时间，发现自己有很多盲区，又去学了 Spring。最近学了 Webflux，并对之前 Spring 的[笔记]((https://github.com/XinrZhou/spring-learning))做了补充。
 
 ### 配置
-数据库：开发过程中提前建好了数据库，用hibernate自动建表很方便。之后考虑到需要自动创建数据库，于是又改成了启动时执行sql脚本
+数据库：
+  * 开发过程中提前建好了数据库，用hibernate自动建表很方便
+  * 部署时，在数据库容器创建数据库，在r2bdc地址上声明
 数据初始化：不太会写，参考了老师的代码
 
 ## 数据处理
@@ -116,7 +118,8 @@ Page<Article> findByIdBetween(Integer startId, Integer endId, Pageable pageable)
 时间返回给前端时做了格式处理
 
 ### 部署
-docker-compose一键部署
+docker-compose一键部署，mysql启动时执行了一个初始化脚本
+地址：122.9.33.79:8080
 
 ### 总结
 一直接触的是SSM，这次用的是Spring WebFlux，和传统的SpringMvc方式有很大的差别。  
